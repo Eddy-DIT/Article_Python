@@ -11,6 +11,7 @@ Conceptual Overview Iterators and generators are key elements of functional prog
 Iterators and generators work using special methods and concepts from functional programming. Iterators use the special methods `__iter__()` and `__next__()` to traverse a collection of elements one by one, and to signal when the end of the collection has been reached. Generators use the `yield` keyword to return values to the caller, while suspending execution of the function to allow further execution.
 
 ##### Iterators 
+
 An iterator is an object that allows you to traverse a collection of elements one by one, providing a method to access each element in the collection. Collections in Python such as lists, sets, tuples, dictionaries and even strings can behave like iterators. Iterators are used to process data sequentially and are widely used in loops, data processing functions and used for example in an expression.
  
 ```python
@@ -42,7 +43,6 @@ class Counter:
 ```
 
 
-
 It is possible to use the Counter class in a for expression:
 
 ```python
@@ -59,18 +59,24 @@ The `iter()` function takes as input an iterable object (a list, tuple, dictiona
 Here is a concrete example to help you understand how to use these functions. Let's say we have a list of numbers and we want to display them one by one using an iterator and the function `next()`:
 
 ```python
-my_list = [1, 2, 3, 4, 5]
+my_list = [1, 2, 3, 4, ]
 my_iterator = iter(my_list)
 
 print(next(my_iterator)) # Display 1
 print(next(my_iterator)) # Display 2
 print(next(my_iterator)) # Display 3
 print(next(my_iterator)) # Display 4
-print(next(my_iterator)) # Display 5
 print(next(my_iterator)) # Raises the StopIteration exception
 ```
 
-
+```
+>>> 1
+>>> 2
+>>> 3
+>>> 4
+```
+In summary
+![Image](Image/iterator-python.jpg)
 In this example, we first create an iterator for the list my_list using the `iter()` function. Then we use the `next()` function to access each element of the list one by one. When we reach the end of the list, the `next()` function throws the `StopIteration` exception.
 
 The `iter()` and `next()` functions are therefore very useful for browsing iterable objects one element at a time, using an iterator to access each element sequentially.
@@ -418,6 +424,79 @@ process_data(data_generator)
 In this code, the generate_data() function creates an infinite sequence of random data using the yield function, thus generating data in real time.
 The function `process_data(data_stream)` then takes this sequence of data as input to a data_stream generator object and uses a for loop to iterate over each element of the data sequence in real time. At each iteration, the function performs processing operations on the data, such as calculating the mean and median, filtering the data, etc.
 Using functions such as `yield`, `mean`, `median`, `filter`, `__iter__()`, and `__next__()`, this code demonstrates how to process real-time data streams from a mobile telecommunications base station using generators and iterators in Python.
+### Example 3 
+A database can be used to store and analyze various types of data, such as customer information, call records, network performance metrics, and billing data. To analyze this data, iterators and generators can be used to efficiently process large amounts of information.
+
+For example, suppose we have a database containing call records for a telecommunications company. Each call record contains information such as the caller's phone number, the callee's phone number, the call start and end times, and the duration of the call. To calculate the total duration of all calls made by a particular customer, we can use an iterator to iterate over all the call records in the database and a generator to filter out the records that correspond to the desired customer.
+
+Here's an example code snippet in Python:
+```python
+import sqlite3
+
+# Connect to the database
+conn = sqlite3.connect('calls_data.db')
+
+# Create an iterator to fetch all call records from the database
+cursor = conn.cursor()
+cursor.execute('SELECT * FROM call_records')
+call_records = cursor.fetchall()
+
+# Define a generator to filter out call records for a specific customer
+def filter_customer(records, customer_phone):
+    for record in records:
+        if record[0] == customer_phone or record[1] == customer_phone:
+            yield record
+
+# Use the filter_customer generator to calculate the total call duration for a specific customer
+total_duration = 0
+for record in filter_customer(call_records, '555-1234'):
+    total_duration += record[3]
+
+print('Total call duration for customer 555-1234:', total_duration)
+
+# Close the database connection
+conn.close()
+```
+In this example, we use the `fetchall()` method to fetch all call records from the database and store them in a list. We then define a filter_customer generator that yields only the call records for the specified customer. Finally, we use a for loop to iterate over the filtered call records and calculate the total duration of all calls made by the customer. By using a generator to filter out only the relevant call records, we can avoid iterating over unnecessary data and improve the efficiency of our analysis.
+### Exemple 4
+Antennas are used to transmit and receive signals between cellular devices and base stations. Antenna cells are a set of cells that are covered by a specific antenna. By analyzing the traffic of each antenna cell, we can identify which cells are experiencing heavy traffic and which ones are not.
+
+To do this, we can use iterators and generators in Python. An iterator is an object that can be iterated upon, meaning that we can loop through its elements. A generator is a special type of iterator that allows us to generate a sequence of values on-the-fly, rather than storing them all in memory at once.
+
+Here is an example of how we can use iterators and generators to analyze traffic in antenna cells:
+
+```python
+# Define a list of antenna cells
+antenna_cells = [1, 2, 3, 4, 5]
+
+# Define a dictionary to store traffic data for each cell
+traffic_data = {}
+
+# Define a generator function to simulate traffic data for each cell
+def generate_traffic_data():
+    for cell in antenna_cells:
+        # Generate random traffic data for each cell
+        traffic = random.randint(0, 100)
+        yield (cell, traffic)
+
+# Iterate through the generator and store the data in the dictionary
+for cell, traffic in generate_traffic_data():
+    traffic_data[cell] = traffic
+
+# Print the traffic data for each cell
+for cell, traffic in traffic_data.items():
+    if traffic > 50:
+        print(f"Cell {cell} has heavy traffic ({traffic}%)")
+    else:
+        print(f"Cell {cell} has light traffic ({traffic}%)")
+```
+
+
+In this example, we first define a list of antenna cells and a dictionary to store traffic data for each cell. We then define a generator function `called generate_traffic_data()` that loops through each cell in the `antenna_cells` list and generates random traffic data for each cell. We use the `yield` keyword to return the data for each cell one at a time.
+
+Next, we iterate through the generator using a `for` loop and store the data in the `traffic_data` dictionary. Finally, we loop through the dictionary and print out the traffic data for each cell. If the traffic for a cell is greater than 50%, we print a message indicating that the cell has heavy traffic, otherwise we print a message indicating that the cell has light traffic.
+
+Using this approach, we can quickly analyze traffic data for multiple antenna cells and identify which cells are experiencing heavy traffic and which ones are not.
 
 ### Conclusion
 
@@ -425,4 +504,11 @@ Iterators and generators are important tools in the telecommunications domain fo
 In the telecom domain, real-time data can come from different sources such as network devices, IoT sensors or transaction data. Iterators and generators provide flexibility and efficiency by allowing this data to be processed dynamically, without having to store the data in a complete data structure.
 
 
+#### Références
+https://docs.python.org/fr/3/howto/functional.html
+
+
+https://www.analyticsvidhya.com/blog/2021/07/python-generators-and-iterators-in-2-minutes-for-data-science-beginners/
+
+Documentation Python
 
